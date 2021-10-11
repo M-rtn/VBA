@@ -1,0 +1,26 @@
+'=============================================
+'Description: Outlook macro to show categorie
+'             and Reminder dialogs on sending
+'             e-mails.
+'=============================================
+
+Public Sub Application_ItemSend(ByVal Item As Object, Cancel As Boolean)
+    Dim xNewEmail As MailItem
+    Dim objOL As Outlook.Application
+    Set objOL = Outlook.Application
+        If Item.Class = olMail Then
+            Set NewMail = Item
+            NewMail.ShowCategoriesDialog
+        
+            Select Case TypeName(objOL.ActiveWindow)
+                Case "Explorer"
+                objOL.ActiveExplorer.CommandBars.ExecuteMso ("AddReminder")
+               
+                Case "Inspector"
+               objOL.ActiveInspector.CommandBars.ExecuteMso ("AddReminder")
+            End Select
+        End If
+    'Clean up
+    Set xNewEmail = Nothing
+    Set objOL = Nothing
+End Sub
