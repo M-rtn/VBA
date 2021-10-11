@@ -1,0 +1,60 @@
+Sub PrintToPDF()
+
+'Prints selected emails to separate PDF files and saves them to a folder on the user's download drive
+
+    Dim Session As Outlook.NameSpace
+    Dim currentExplorer As Explorer
+    Dim Selection As Selection
+    Dim FolderPath As String
+    Dim FileName As String
+    Dim myDate As String
+ 
+    Dim obj As Object
+ 
+    Set currentExplorer = Application.ActiveExplorer
+    Set Selection = currentExplorer.Selection
+    myDate = Replace(Date, ".", "")
+    myDate = Replace(myDate, " ", "")
+
+'Set up temporary folder
+    Dim fdObj As Object
+    Set fdObj = CreateObject("Scripting.FileSystemObject")
+
+'Create PDF files
+For Each obj In Selection
+    
+ 'Base File name on subject and sender
+    FileName = obj.Subject & "_" & obj.Sender
+    FilePath = "FILL_IN_FILEPATH_HERE"
+
+'Remove problematic characters from subject line
+    FileName = Replace(FileName, "'", "")
+    FileName = Replace(FileName, "/", "")
+    FileName = Replace(FileName, "(", "")
+    FileName = Replace(FileName, ")", "")
+    FileName = Replace(FileName, ".", "")
+    FileName = Replace(FileName, "\", "")
+    FileName = Replace(FileName, ":", "")
+    FileName = Replace(FileName, "*", "")
+    FileName = Replace(FileName, "?", "")
+    FileName = Replace(FileName, "", "")
+    FileName = Replace(FileName, "<", "")
+    FileName = Replace(FileName, ">", "")
+    FileName = Replace(FileName, "|", "")
+   
+    MsgBox "Saved PDF at: " & FilePath & FileName & "_" & myDate & ".pdf"
+
+    Set objInspector = obj.GetInspector
+    Set objDoc = objInspector.WordEditor
+    objDoc.ExportAsFixedFormat FilePath & FileName & "_" & myDate & ".pdf", 17   '17 designates PDF format
+    Set objInspector = Nothing
+    Set objDoc = Nothing
+
+Next obj
+
+    Set Session = Nothing
+    Set currentExplorer = Nothing
+    Set obj = Nothing
+    Set Selection = Nothing
+
+End Sub
